@@ -16,6 +16,9 @@ Version:
 
 var sys = require('sys');
 var BISON = require('./bison');
+GameLogger = {
+	'log': null
+}
 
 Logger = (function()
 {

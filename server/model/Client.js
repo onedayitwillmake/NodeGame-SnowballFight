@@ -73,11 +73,18 @@ var init = function()
 			var messageIndex = this.outgoingSequenceNumber & this.MESSAGE_BUFFER_MASK;
 			this.outgoingMessageBuffer[messageIndex] = anEncodedMessage
 
+
 			// Send and increment our message count
 			this.conn.send( anEncodedMessage );
 			this.outgoingSequenceNumber++;
 
+
+//			var fakeMessage = "ABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOPABCDEFGHZJKLMNOP"
+//			console.ourLog(SYS.inspect(BISON.decode(anEncodedMessage)));
+			
+			//global.gameLog(fakeMessage);
 			// Incriment bytes sent by the NetChannel
+//			this.netChannel.bytes.sent += BISON.encode(fakeMessage).length;
 			this.netChannel.bytes.sent += anEncodedMessage.length;
 		},
 
@@ -123,8 +130,9 @@ var init = function()
 
 // Handle Node.JS and browser
 if (typeof window === 'undefined') {
-	require('js/lib/jsclass/core.js');
-	require('js/lib/bison.js');
+	require('js/lib/jsclass/core');
+	require('js/lib/bison');
+	require('lib/Logger');
 	Client = init();
 }
 

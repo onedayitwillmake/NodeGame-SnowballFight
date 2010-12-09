@@ -19,8 +19,8 @@
  *
  *    2. Altered source versions must be plainly marked as such, and must 
  *       not be misrepresented as being the original software.
- *
- *    3. This notice may not be removed or altered from any source 
+
+ *    3. This notice may not be removed or altered from any source
  *       distribution.
  */
 
@@ -2594,8 +2594,8 @@ b2BroadPhase.prototype.Query = function (lowerQueryOut, upperQueryOut, lowerValu
 			
 			while (s)
 			{
-				
 				bound = bounds[i];
+				if(bound == undefined) continue;
 				if (bound.IsLower())
 				{
 					var proxy = this.m_proxyPool[ bound.proxyId ];
@@ -3303,11 +3303,10 @@ b2BroadPhase.prototype.Validate = function () {
 b2BroadPhase.prototype.TestOverlap = function (b, p) {
 		for (var axis = 0; axis < 2; ++axis)
 		{
+
 			var bounds = this.m_bounds[axis];
-			
-			
-			
-			
+			  if(!bounds) continue;
+
 			var bound = bounds[p.upperBounds[axis]];
 			if (b.lowerValues[axis] > bound.value)
 				return false;

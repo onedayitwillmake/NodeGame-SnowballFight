@@ -33,12 +33,9 @@ Server = (function()
 	{
 		initialize: function( gameConfig, serverConfig )
 		{
-			this.logger = new Logger( serverConfig, this );
 			this.gameConfig = gameConfig;
 			this.serverConfig = serverConfig;
 
-			var loggerOptions = {};
-			this.logger = new Logger( loggerOptions, this );
 			this.games = {};
 
 			for( var i = 0; i < 1; i += 1 )

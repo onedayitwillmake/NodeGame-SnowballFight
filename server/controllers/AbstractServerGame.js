@@ -48,10 +48,10 @@ AbstractServerGame = (function()
 			this.nextEntityID = 1; 	// Each time we create an entity we increment this
 
 			console.log('(ServerGame)::init');
-//					console.ourLog = function (var_args) {
-//						this.log('+'+var_args);
-//						console.log(this)
-//					};
+			var that = this;
+			console.ourLog = function (var_args) {
+				that.log(var_args);
+			};
 
 			this.fieldController.createPackedCircleManager();
             this.createLevel();
@@ -63,9 +63,8 @@ AbstractServerGame = (function()
 			// Each ServerNetChannel is owned by a single ServerGameInstance
 			this.netChannel = new ServerNetChannel(this, this.server.gameConfig);
 
-
 			this.logLevel = LOG_LEVEL.ALL;
-			this.logger = new Logger({time: this.gameClock, showStatus: false }, this);
+			this.logger = new Logger({time: this.gameClock, showStatus: true }, this);
 		},
 
 		createLevel: function()
