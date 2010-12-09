@@ -22,11 +22,13 @@ Version:
 */
 
 require('events');
-require('js/controllers/AbstractGame.js');
-require('js/lib/Joystick.js');
-require('network/ServerNetChannel.js');
-require('model/WorldEntityDescription.js');
-require('lib/Logger.js');
+require('js/controllers/AbstractGame');
+require('js/lib/Joystick');
+require('js/factories/GameEntityFactory');
+require('js/model/FieldEntityModel');
+require('network/ServerNetChannel');
+require('model/WorldEntityDescription');
+require('lib/Logger');
 
 AbstractServerGame = (function()
 {
@@ -43,13 +45,14 @@ AbstractServerGame = (function()
 		initialize: function(aServer, aGameModel)
 		{
 			this.callSuper();
-			
+			this.nextEntityID = 1; 	// Each time we create an entity we increment this
+
 			console.log('(ServerGame)::init');
-
+			console.ourLog = function (var_args) {
+				this.log('+'+var_args);
+			}
 			this.fieldController.createPackedCircleManager();
-
-			// Each time we create an entity we increment this
-			this.nextEntityID = 1;
+            this.createLevel();
 
 			// the Server has access to all the games and our logger
 			// amongst other things that the entire server would need
@@ -60,8 +63,24 @@ AbstractServerGame = (function()
 
 
 			this.logLevel = LOG_LEVEL.ALL;
-			this.logger = new Logger({time: this.gameClock, showStatus: false }, this);
+			this.logger = new Logger({time: this.gameClock, showStatus: true }, this);
 		},
+
+		createLevel: function()
+		{
+			var aFieldEntity,
+				aFieldEntityModel;
+
+			//blockOfIce
+			for (var i = 0; i < 8; i++)
+			{
+				aFieldEntityModel = FieldEntityModel.blockOfIce1;
+				aFieldEntityModel.initialPosition = {x: Math.random() * this.model.width, y: Math.random() * this.model.height};
+				aFieldEntity = this.entityFactory.createFieldEntity(this.getNextEntityID(), this.fieldController, aFieldEntityModel)
+				this.fieldController.addEntity(aFieldEntity);
+			}
+		},
+
 
 		/**
 		 * Main loop

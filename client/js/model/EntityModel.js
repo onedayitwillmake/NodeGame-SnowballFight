@@ -14,9 +14,10 @@
 var init = function()
 {
 	return {
-		UNKNOWN		: 1 << 0,
-		CHARACTER	: 1 << 1,
-		PROJECTILE	: 1 << 2
+		UNKNOWN				: 1 << 0,
+		CHARACTER			: 1 << 1,
+		PROJECTILE			: 1 << 2,
+		FIELD_ENTITY		: 1 << 3
 	}
 };
 

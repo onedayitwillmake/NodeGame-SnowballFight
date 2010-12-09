@@ -1,28 +1,24 @@
 /**
  File:
- 	GameModel.js
+ 	ProjectileModel.js
  Created By:
 	 Mario Gonzalez
  Project	:
 	 Ogilvy Holiday Card 2010
  Abstract:
- 	When communicating between the server and client, we need a way to discern what type an entity-type each object.
- 	Map the types to integers
+ 	Contains the properties for the various types of projectiles
  Basic Usage:
  */
 
 var init = function()
 {
 	return {
-		width: 900,
-		height: 600,
-		gameDuration: 5 * 60 * 1000
-		
+		blockOfIce1		: { initialPosition:{x:5, y:5}, collisionBitfield: 0, collisionOffset: {x:0, y:0}, radius: 10, theme: "block-of-ice-1" }
 	}
 };
 
 if (typeof window === 'undefined') {
-	GameModel = init();
+	FieldEntityModel = init();
 } else{
 	// We're on the browser.
 	// Require.js will use this file's name (CharacterController.js), to create a new

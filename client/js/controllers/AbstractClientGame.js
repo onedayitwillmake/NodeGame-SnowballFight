@@ -9,12 +9,11 @@ Abstract:
 	This class represents the client-side GameController.
 	It contains a NetChannel instead of a Server, as well as a ClientGameView 
 Basic Usage: 
-	 var gameController = new ClientGameController(HOST, PORT) 
+	var gameController = new ClientGameController(HOST, PORT) 
 */
 
-var init = function(Vector, NetChannel, GameView, Joystick, AbstractGame, ClientControlledTrait)
+var init = function(Vector, NetChannel, GameView, Joystick, AbstractGame, TraitFactory)
 {
-
 	return new JS.Class(AbstractGame,
 	{
 		initialize: function(config)
@@ -171,10 +170,8 @@ var init = function(Vector, NetChannel, GameView, Joystick, AbstractGame, Client
 						// If this character is owned by the us, allow it to be controlled by the keyboard
 						if(isOwnedByMe)
 						{
-							var trait = new NodeGameKit.traits.BaseTrait();
-							console.log('ttt', trait.displayName)
-//							new ClientControlledTrait()
-//							aCharacter.addTraitAndExecute(  );
+							var clientControlledTrait = TraitFactory.createTraitWithName('ClientControlledTrait');
+							aCharacter.addTraitAndExecute( new clientControlledTrait() );
 							this.clientCharacter = aCharacter;
 						}
 					}
@@ -314,10 +311,11 @@ var init = function(Vector, NetChannel, GameView, Joystick, AbstractGame, Client
 	});
 };
 
+
 define(['lib/Vector',
 	'network/NetChannel', 
 	'view/GameView',
 	'lib/joystick',
 	'controllers/AbstractGame',
-	'controllers/entities/traits/ClientControlledTrait',
+	'factories/TraitFactory',
 	'lib/jsclass/core'], init);

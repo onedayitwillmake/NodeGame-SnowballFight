@@ -35,6 +35,15 @@ var init = function(Vector, Rectangle, FieldView, PackedCircle, PackedCircleMana
 		 * Create the PackedCircleManager
 		 * This is only created on the server side
 		 */
+		createFieldFromModel: function(aGameMo)
+		{
+
+		},
+
+		/**
+		 * Create the PackedCircleManager
+		 * This is only created on the server side
+		 */
 		createPackedCircleManager: function()
 		{
 			//this.packedCircleManager = new PackedCircleManager( {centeringPasses: 0, collisionPasses: 1, dispatchCollisionEvents: true});
@@ -124,8 +133,8 @@ var init = function(Vector, Rectangle, FieldView, PackedCircle, PackedCircleMana
 		{
 			var anEntity = null;
 			if( anEntityDescription.entityType != GAMECONFIG.ENTITY_MODEL.PROJECTILE ) {
-				console.log("(FieldController): Don't know how to handle entity type: '" + anEntityDescription.entityType + "'! Ignoring... ");
-				return 0;
+				//console.log("(FieldController): Don't know how to handle entity type: '" + anEntityDescription.entityType + "'! Ignoring... ");
+				//return 0;
 			}
 
 			// For now we only know hwo to add projectiles using this method!!
@@ -166,12 +175,12 @@ var init = function(Vector, Rectangle, FieldView, PackedCircle, PackedCircleMana
 			this.addEntity( aNewProjectile );
 
 			// Apply impulse to character acceleration in opposite angle of the projectile
-			var currentAngle = aCharacter.velocity.angle();
-			var impulseForce = 3;//aProjectileModel.force * 2;
-			var impulseVector = new Vector(Math.cos(currentAngle) * -impulseForce, Math.sin(currentAngle) * -impulseForce);
+			var currentAngle = aNewProjectile.angle;
+			var impulseForce = -20;//aProjectileModel.force * 2;
+			var impulseVector = new Vector(Math.cos(currentAngle) * impulseForce, Math.sin(currentAngle) * impulseForce);
 
-//			aCharacter.velocity.mul(0);
-//			aCharacter.acceleration.add( impulseVector );
+			this.gameController.log(impulseVector);
+			aCharacter.acceleration.add( impulseVector );
 			return aNewProjectile;
 		},
 

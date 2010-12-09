@@ -11,7 +11,7 @@
 	 // TODO: FILL OUT
  */
 
-var init = function(Vector, Rectangle, GameEntity, Character, Projectile)
+var init = function(Vector, Rectangle, GameEntity, Character, Projectile, FieldEntity)
 {
 	return new JS.Class(
 	{
@@ -27,12 +27,13 @@ var init = function(Vector, Rectangle, GameEntity, Character, Projectile)
 			this.entityTypes.setObjectForKey(GameEntity, 'GameEntity');
 			this.entityTypes.setObjectForKey(Character, 'Character');
 			this.entityTypes.setObjectForKey(Projectile, 'Projectile');
+			this.entityTypes.setObjectForKey(FieldEntity, 'FieldEntity');
 
 			this.collisionBitmask = {
 				'None': 0,
 				'Character':  1 << 0,
 				'Projectile': 1 << 1,
-				'CollidableLevelObject': 1 << 2
+				'FieldEntity': 1 << 2
 			};
 
 		},
@@ -42,8 +43,8 @@ var init = function(Vector, Rectangle, GameEntity, Character, Projectile)
 			//this.entityTypes.objectForKey(aCharacterType); // Retrieve class from sorted table
 			var projectile = new Projectile(anObjectID, aClientID, aFieldController, aProjectileModel, 1);
 
-			// Should snowballs collide with one another? 
-			projectile.collisionBitfield = this.collisionBitmask.Character | this.collisionBitmask.CollidableLevelObject;
+			// Should snowballs collide with one another?
+			projectile.collisionBitfield = this.collisionBitmask.Character | this.collisionBitmask.FieldEntity;
 
 			return projectile;
 		},
@@ -53,9 +54,20 @@ var init = function(Vector, Rectangle, GameEntity, Character, Projectile)
 			var aNewCharacter = new Character(anObjectID, aClientID, aFieldController);
 
 			// Collide against other characters, projectiles, and level objects
-			aNewCharacter.collisionBitfield = this.collisionBitmask.Character | this.collisionBitmask.Projectile | this.collisionBitmask.CollidableLevelObject;
+			aNewCharacter.collisionBitfield = this.collisionBitmask.Character | this.collisionBitmask.Projectile | this.collisionBitmask.FieldEntity;
 			return aNewCharacter;
+		},
+
+		createFieldEntity: function(anObjectID, aFieldController, aFieldEntityModel)
+		{
+			var aNewFieldEntity = new FieldEntity(anObjectID, 0, aFieldController, aFieldEntityModel);
+			aNewFieldEntity.position = new Vector(aFieldEntityModel.initialPosition.x, aFieldEntityModel.initialPosition.y);
+			
+			// Collide against characters and projectiles
+			aNewFieldEntity.collisionBitfield = this.collisionBitmask.Character | this.collisionBitmask.Projectile;
+			return aNewFieldEntity;
 		}
+
 	});
 };
 
@@ -68,8 +80,9 @@ if (typeof window === 'undefined')
 	require('../controllers/entities/GameEntity');
 	require('../controllers/entities/Character');
 	require('../controllers/entities/Projectile');
-	
-	GameEntityFactory = init(Vector, Rectangle, GameEntity, Character, Projectile);
+	require('../controllers/entities/FieldEntity');
+
+	GameEntityFactory = init(Vector, Rectangle, GameEntity, Character, Projectile, FieldEntity);
 }
 else
 {
@@ -80,5 +93,6 @@ else
 		'controllers/entities/GameEntity',
 		'controllers/entities/Character',
 		'controllers/entities/Projectile',
+		'controllers/entities/FieldEntity',
 		'lib/jsclass/core'], init);
 }
