@@ -62,7 +62,7 @@ var init = function(Vector, Rectangle, FieldView, PackedCircle, PackedCircleMana
 			worldAABB.upperBound.Set(this.rectangle.width + buffer, this.rectangle.height + buffer);
 			
 
-			var gravity = new b2d.b2Vec2(0.0, -10.0);
+			var gravity = new b2d.b2Vec2(0.0, 35.0);
 			box2d.gravity = gravity;
 
 			var doSleep = true;
@@ -73,7 +73,7 @@ var init = function(Vector, Rectangle, FieldView, PackedCircle, PackedCircleMana
 			// Ground Box
 			var groundBodyDef = new b2d.b2BodyDef();
 			box2d.groundBodyDef = groundBodyDef;
-			groundBodyDef.position.Set(0.0, -10.0);
+			groundBodyDef.position.Set(0.0, this.rectangle.height-20);
 
 			var groundBody = world.CreateBody(groundBodyDef);
 			box2d.groundBody = groundBody;
@@ -81,31 +81,41 @@ var init = function(Vector, Rectangle, FieldView, PackedCircle, PackedCircleMana
 			var groundShapeDef = new b2d.b2PolygonDef();
 			box2d.groundShapeDef = groundShapeDef;
 
-			groundShapeDef.SetAsBox(50.0, 10.0);
+			groundShapeDef.SetAsBox(this.rectangle.width,  20);
 			groundBody.CreateShape(groundShapeDef);
 
-			// Run Simulation!
-			var timeStep = 1.0 / 60.0;
+			// Run Simulation
+			var timeStep = 1.0 / 40.0;
 			box2d.timeStep = timeStep;
-			var iterations = 10;
+			var iterations = 5;
 		   	box2d.iterations = iterations;
 
 			box2d.tick = function()
 			{
 				world.Step(timeStep, iterations);
-				var body;
-				for (body = world.m_bodyList; body; body = body.m_next)
+				var next = world.m_bodyList,
+					i = 0;
+				
+				while(next)
 				{
-//					console.log('a',body)
+					// Save 'next' right now, in case we delete body.
+					var body = next;
+					next = body.m_next;
+
+					// Nothing to do if no userData
+					if(!body.userData) continue;
+					var position = body.GetPosition();
+    				var angle = body.GetAngle();
+
+					body.userData.position.set(position.x,  position.y);
 				}
 			};
 
 			box2d.addCircle = function(anEntity, radius)
 			{
-				console.log(radius)
 			   // Dynamic Body
 				var bodyDef = new b2d.b2BodyDef();
-				bodyDef.position.Set(0.0, 4.0);
+				bodyDef.position.Set(anEntity.position.x,  anEntity.position.y);
 
 				var body = world.CreateBody(bodyDef);
 				body.userData = anEntity;
@@ -113,9 +123,9 @@ var init = function(Vector, Rectangle, FieldView, PackedCircle, PackedCircleMana
 				var shapeDef = new b2d.b2CircleDef();
 				shapeDef.radius = radius;
 
-				shapeDef.density = 1.0;
-				shapeDef.friction = 0.3;
-
+				shapeDef.density = 0.9;
+				shapeDef.friction = 0.2;
+				shapeDef.restitution = 0.4 + Math.random()*0.4;
 				body.CreateShape(shapeDef);
 				body.SetMassFromShapes();
 			};
@@ -205,7 +215,6 @@ var init = function(Vector, Rectangle, FieldView, PackedCircle, PackedCircleMana
 				this.packedCircleManager.addCircle(aPackedCircle);
 			}
 
-			console.log('a')
 			if(this.box2d) {
 				this.box2d.addCircle(anEntity, anEntity.radius);
 			}

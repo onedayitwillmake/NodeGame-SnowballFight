@@ -48,9 +48,11 @@ AbstractServerGame = (function()
 			this.nextEntityID = 1; 	// Each time we create an entity we increment this
 
 			console.log('(ServerGame)::init');
-			console.ourLog = function (var_args) {
-				this.log('+'+var_args);
-			}
+//					console.ourLog = function (var_args) {
+//						this.log('+'+var_args);
+//						console.log(this)
+//					};
+
 			this.fieldController.createPackedCircleManager();
             this.createLevel();
 
@@ -63,7 +65,7 @@ AbstractServerGame = (function()
 
 
 			this.logLevel = LOG_LEVEL.ALL;
-			this.logger = new Logger({time: this.gameClock, showStatus: true }, this);
+			this.logger = new Logger({time: this.gameClock, showStatus: false }, this);
 		},
 
 		createLevel: function()
@@ -91,6 +93,7 @@ AbstractServerGame = (function()
 		{
 			this.callSuper();
 
+			this.fieldController.box2d.tick();
 			//this.fieldController.packedCircleManager.handleCollisions();
 
 			// Create a new world-entity-description, could be some room for optimization here but it only happens once per game loop anyway
