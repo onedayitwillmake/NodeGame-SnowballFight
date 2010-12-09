@@ -30,7 +30,7 @@ SnowGame = (function()
 			this.callSuper();
 			var that = this;
 			var collisionManager = this.fieldController.getCollisionManager();
-			collisionManager.eventEmitter.on('collision', function() { that.onCollision.apply(that, arguments) });
+//			collisionManager.eventEmitter.on('collision', function() { that.onCollision.apply(that, arguments) });
 		},
 
 		onCollision: function(circleA, circleB, collisionNormal)

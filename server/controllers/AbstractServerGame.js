@@ -72,7 +72,7 @@ AbstractServerGame = (function()
 		{
 			this.callSuper();
 
-			this.fieldController.packedCircleManager.handleCollisions();
+			//this.fieldController.packedCircleManager.handleCollisions();
 
 			// Create a new world-entity-description, could be some room for optimization here but it only happens once per game loop anyway
 			var worldEntityDescription = new WorldEntityDescription( this );

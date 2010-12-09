@@ -37,7 +37,82 @@ var init = function(Vector, Rectangle, FieldView, PackedCircle, PackedCircleMana
 		 */
 		createPackedCircleManager: function()
 		{
-			this.packedCircleManager = new PackedCircleManager( {centeringPasses: 0, collisionPasses: 1, dispatchCollisionEvents: true});
+			//this.packedCircleManager = new PackedCircleManager( {centeringPasses: 0, collisionPasses: 1, dispatchCollisionEvents: true});
+			var box2d = {};
+
+			var sys = require("sys"),
+			b2d = require("lib/box2dnode");
+
+			// Define world
+			var worldAABB = new b2d.b2AABB();
+			box2d.worldAABB = worldAABB;
+
+			var buffer = 100;
+
+			worldAABB.lowerBound.Set(this.rectangle.x - buffer, this.rectangle.y - buffer);
+			worldAABB.upperBound.Set(this.rectangle.width + buffer, this.rectangle.height + buffer);
+			
+
+			var gravity = new b2d.b2Vec2(0.0, -10.0);
+			box2d.gravity = gravity;
+
+			var doSleep = true;
+
+			var world = new b2d.b2World(worldAABB, gravity, doSleep);
+		   	box2d.world = world;
+
+			// Ground Box
+			var groundBodyDef = new b2d.b2BodyDef();
+			box2d.groundBodyDef = groundBodyDef;
+			groundBodyDef.position.Set(0.0, -10.0);
+
+			var groundBody = world.CreateBody(groundBodyDef);
+			box2d.groundBody = groundBody;
+
+			var groundShapeDef = new b2d.b2PolygonDef();
+			box2d.groundShapeDef = groundShapeDef;
+
+			groundShapeDef.SetAsBox(50.0, 10.0);
+			groundBody.CreateShape(groundShapeDef);
+
+			// Run Simulation!
+			var timeStep = 1.0 / 60.0;
+			box2d.timeStep = timeStep;
+			var iterations = 10;
+		   	box2d.iterations = iterations;
+
+			box2d.tick = function()
+			{
+				world.Step(timeStep, iterations);
+				var body;
+				for (body = world.m_bodyList; body; body = body.m_next)
+				{
+//					console.log('a',body)
+				}
+			};
+
+			box2d.addCircle = function(anEntity, radius)
+			{
+				console.log(radius)
+			   // Dynamic Body
+				var bodyDef = new b2d.b2BodyDef();
+				bodyDef.position.Set(0.0, 4.0);
+
+				var body = world.CreateBody(bodyDef);
+				body.userData = anEntity;
+
+				var shapeDef = new b2d.b2CircleDef();
+				shapeDef.radius = radius;
+
+				shapeDef.density = 1.0;
+				shapeDef.friction = 0.3;
+
+				body.CreateShape(shapeDef);
+				body.SetMassFromShapes();
+			};
+
+			box2d.tick();
+			this.box2d = box2d;
 		},
 
 		/**
@@ -119,6 +194,11 @@ var init = function(Vector, Rectangle, FieldView, PackedCircle, PackedCircleMana
 				// Allow the entity to setup the collision callback, and set some properties inside aPackedCircle
 				// (Note) Entities do not store a reference to packedCircle. (although im set in stone about this one yet)
 				this.packedCircleManager.addCircle(aPackedCircle);
+			}
+
+			console.log('a')
+			if(this.box2d) {
+				this.box2d.addCircle(anEntity, anEntity.radius);
 			}
 
 
